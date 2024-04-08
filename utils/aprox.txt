@@ -1,0 +1,440 @@
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Celje_2300
+import TradingView/ta/5
+
+//@version=5
+
+// @description It's a library of the aproximations of a price and noice redusction.
+library("math")
+
+
+// @function DFT3: Discrete Fourier Transform with 3 points
+// @param x: Array of input values
+// @param y: Array of imaginary values
+// @param _dir: Direction parameter
+// @returns DFT1 value
+DFT3(x, y, _dir) =>  
+   
+   
+
+x_0 = array.get(x, 0) + array.get(x, 1) + array.get(x, 2)
+x_1 = array.get(x, 0) + array.get(x, 1) * math.cos( -2 * math.pi * _dir / 3 ) - array.get(y, 1) * math.sin( -2 * math.pi * _dir / 3 )  + array.get(x, 2) * math.cos( -4 * math.pi * _dir / 3 ) - array.get(y, 2) * math.sin( -4 * math.pi * _dir / 3 )
+x_2 = array.get(x, 0) + array.get(x, 1) * math.cos( -4 * math.pi * _dir / 3 ) - array.get(y, 1) * math.sin( -4 * math.pi * _dir / 3 )  + array.get(x, 2) * math.cos( -8 * math.pi * _dir / 3 ) - array.get(y, 2) * math.sin( -8 * math.pi * _dir / 3 )
+
+y_0 = array.get(x, 0) + array.get(x, 1) + array.get(x, 2)
+y_1 = array.get(x, 0) + array.get(x, 1) * math.sin( -2 * math.pi * _dir / 3 ) + array.get(y, 1) * math.cos( -2 * math.pi * _dir / 3 )  + array.get(x, 2) * math.sin( -4 * math.pi * _dir / 3 ) + array.get(y, 2) * math.cos( -4 * math.pi * _dir / 3 )
+y_2 = array.get(x, 0) + array.get(x, 1) * math.sin( -4 * math.pi * _dir / 3 ) + array.get(y, 1) * math.cos( -4 * math.pi * _dir / 3 )  + array.get(x, 2) * math.sin( -8 * math.pi * _dir / 3 ) + array.get(y, 2) * math.cos( -8 * math.pi * _dir / 3 )
+
+
+div =  _dir == 1 ? 3 : _dir
+
+
+array.set(x, 0, x_0 / div)
+array.set(x, 1, x_1 / div)
+array.set(x, 2, x_2 / div)
+array.set(y, 0, y_0 / div)
+array.set(y, 1, y_1 / div)
+array.set(y, 2, y_2 / div)
+
+
+export DFT3(int _dir, series float xval = close) =>  
+   
+x = array.new_float(3, 0.0)
+y = array.new_float(3, 0.0)
+for i = 0 to 2
+array.set(x, i, xval[i])
+array.set(y, i, 0.0)
+   
+
+x_0 = array.get(x, 0) + array.get(x, 1) + array.get(x, 2)
+x_1 = array.get(x, 0) + array.get(x, 1) * math.cos( -2 * math.pi * _dir / 3 ) - array.get(y, 1) * math.sin( -2 * math.pi * _dir / 3 )  + array.get(x, 2) * math.cos( -4 * math.pi * _dir / 3 ) - array.get(y, 2) * math.sin( -4 * math.pi * _dir / 3 )
+x_2 = array.get(x, 0) + array.get(x, 1) * math.cos( -4 * math.pi * _dir / 3 ) - array.get(y, 1) * math.sin( -4 * math.pi * _dir / 3 )  + array.get(x, 2) * math.cos( -8 * math.pi * _dir / 3 ) - array.get(y, 2) * math.sin( -8 * math.pi * _dir / 3 )
+
+y_0 = array.get(x, 0) + array.get(x, 1) + array.get(x, 2)
+y_1 = array.get(x, 0) + array.get(x, 1) * math.sin( -2 * math.pi * _dir / 3 ) + array.get(y, 1) * math.cos( -2 * math.pi * _dir / 3 )  + array.get(x, 2) * math.sin( -4 * math.pi * _dir / 3 ) + array.get(y, 2) * math.cos( -4 * math.pi * _dir / 3 )
+y_2 = array.get(x, 0) + array.get(x, 1) * math.sin( -4 * math.pi * _dir / 3 ) + array.get(y, 1) * math.cos( -4 * math.pi * _dir / 3 )  + array.get(x, 2) * math.sin( -8 * math.pi * _dir / 3 ) + array.get(y, 2) * math.cos( -8 * math.pi * _dir / 3 )
+
+
+div =  _dir == 1 ? 3 : _dir
+
+
+array.set(x, 0, x_0 / div)
+array.set(x, 1, x_1 / div)
+array.set(x, 2, x_2 / div)
+array.set(y, 0, y_0 / div)
+array.set(y, 1, y_1 / div)
+array.set(y, 2, y_2 / div)
+
+dft1 = math.sqrt(math.pow(array.get(x, 0), 2) + math.pow(array.get(y, 0), 2))
+dft1
+
+
+// @function DFT2: Discrete Fourier Transform with 2 points
+// @param x: Array of input values
+// @param y: Array of imaginary values
+// @param _dir: Direction parameter
+// @returns DFT1 value
+DFT2(x, y, _dir) =>  
+   
+   
+
+x_0 = array.get(x, 0) + array.get(x, 1)
+x_1 = array.get(x, 0) + array.get(x, 1) * math.cos( -2 * math.pi * _dir / 2 ) - array.get(y, 1) * math.sin( -2 * math.pi * _dir / 2 )
+
+y_0 = array.get(x, 0) + array.get(x, 1)
+y_1 = array.get(x, 0) + array.get(x, 1) * math.sin( -2 * math.pi * _dir / 2 ) + array.get(y, 1) * math.cos( -2 * math.pi * _dir / 2 )
+
+
+div =  _dir == 1 ? 3 : _dir
+
+array.set(x, 0, x_0 / div)
+array.set(x, 1, x_1 / div)
+array.set(y, 0, y_0 / div)
+array.set(y, 1, y_1 / div)
+
+
+export DFT2(int _dir , series float xval = close) =>  
+   
+x = array.new_float(2, 0.0)
+y = array.new_float(2, 0.0)
+for i = 0 to 1
+array.set(x, i, xval[i])
+array.set(y, i, 0.0)
+   
+
+x_0 = array.get(x, 0) + array.get(x, 1)
+x_1 = array.get(x, 0) + array.get(x, 1) * math.cos( -2 * math.pi * _dir / 2 ) - array.get(y, 1) * math.sin( -2 * math.pi * _dir / 2 )
+
+y_0 = array.get(x, 0) + array.get(x, 1)
+y_1 = array.get(x, 0) + array.get(x, 1) * math.sin( -2 * math.pi * _dir / 2 ) + array.get(y, 1) * math.cos( -2 * math.pi * _dir / 2 )
+
+
+div =  _dir == 1 ? 3 : _dir
+
+array.set(x, 0, x_0 / div)
+array.set(x, 1, x_1 / div)
+array.set(y, 0, y_0 / div)
+array.set(y, 1, y_1 / div)
+
+dft1 = math.sqrt(math.pow(array.get(x, 0), 2) + math.pow(array.get(y, 0), 2))
+dft1
+
+
+// @function FFT: Fast Fourier Transform
+// @param xval: Array of input values
+// @returns DFT1 value
+export FFT(series float xval = close) =>
+N = 3
+x = array.new_float(N, 0.0)
+y = array.new_float(N, 0.0)
+for i = 0 to N - 1
+array.set(x, i, xval[i])
+array.set(y, i, 0.0)
+
+DFT3(x, y, 1)
+
+dft1 = math.sqrt(math.pow(array.get(x, 0), 2) + math.pow(array.get(y, 0), 2))
+
+dft1
+
+// @function DTF32: Combined Discrete Fourier Transforms
+// @param xval: Array of input values
+// @returns DFT1 value
+export DTF32(series float xval = close) =>
+N = 3
+x = array.new_float(N, 0.0)
+y = array.new_float(N, 0.0)
+for i = 0 to N - 1
+array.set(x, i, xval[i])
+array.set(y, i, 0.0)
+
+DFT3(x, y, 2)
+DFT2(x, y, 1)
+
+dft1 = math.sqrt(math.pow(array.get(x, 0), 2) + math.pow(array.get(y, 0), 2))
+
+dft1
+
+
+// @function whitenoise: Ehler's Universal Oscillator with White Noise
+// @param indic_: Input series for the oscillator
+// @param _devided: Divisor for oscillator calculations
+// @param minEmaLength: Minimum EMA length
+// @param maxEmaLength: Maximum EMA length
+// @param src: Source series
+// @returns Smoothed indicator value
+export whitenoise(series float indic_ , int _devided = 10, int minEmaLength = 1, int maxEmaLength = 8 , series float src = close ) =>
+var filt = float(na)
+indic = indic_
+
+w = (src - src[2])  / 2
+
+
+a = math.sqrt(2) * math.pi / _devided
+b = math.cos(math.sqrt(2) * 180 / _devided)
+c2 = 2 *  math.pow(a, 2) * b
+c3 = math.pow(a, 4)
+c1 = 1 - 2 *  math.pow(a, 2) * math.cos(b) + math.pow(a, 4)
+
+
+filt := na(filt[1]) ? 0 : c1 * (w + nz(w[1])) / 2.0  + c2 * nz(filt[1]) - c3 * nz(filt[2])
+
+
+
+// Smoothness (Reduce noise)
+var emaLength = 1 //input(1, "EMA Length", group = "VZO")
+
+
+
+uniL = filt > 0  
+vzoL = indic_ > indic_[1]
+
+// Dynamically adjust EMA length based on conditions
+emaLength := emaLength -1
+if (uniL and vzoL) or (not uniL and not vzoL)
+emaLength := emaLength + 2
+
+
+// Reset EMA length to default if it exceeds the limits
+if emaLength > maxEmaLength or emaLength < minEmaLength
+emaLength := maxEmaLength - 1
+
+
+indic := ta.ema2(indic_, emaLength)
+
+
+indic
+
+
+// @function whitenoise: Ehler's Universal Oscillator with White Noise and DFT1
+// @param indic_: Input series for the oscillator
+// @param dft1: DFT1 value
+// @param _devided: Divisor for oscillator calculations
+// @param minEmaLength: Minimum EMA length
+// @param maxEmaLength: Maximum EMA length
+// @param src: Source series
+// @returns Smoothed indicator value
+export whitenoise(series float indic_ ,  series float dft1 , int _devided = 10, int minEmaLength = 1, int maxEmaLength = 8 , series float src = close) =>
+w = (dft1*src - dft1[2]*src[2])   / math.sqrt(math.pow(math.abs(src- src[2]),2) + math.pow(math.abs(dft1[0]- dft1[2]),2))
+//w = (close - close[2])  / 2
+
+indic = indic_
+var filt = float(na)
+
+a = math.sqrt(2) * math.pi / _devided
+b = math.cos(math.sqrt(2) * 180 / _devided)
+c2 = 2 *  math.pow(a, 2) * b
+c3 = math.pow(a, 4)
+c1 = 1 - 2 *  math.pow(a, 2) * math.cos(b) + math.pow(a, 4)
+
+
+filt := na(filt[1]) ? 0 : c1 * (w*dft1 + nz(w[1]*dft1[1])) / 2.0 /math.abs(dft1[1]-dft1[0]) + c2 * nz(filt[1]) - c3 * nz(filt[2])
+
+
+//filt := na(filt[1]) ? 0 : c1 * (w*dft1 + nz(w[1]*dft1[1])) /math.sqrt(
+//     math.pow(math.abs(w- w[1]),2) + math.pow(math.abs(dft1[0]- dft1[1]),2)
+//     ) + c2 * nz(filt[1]) + c3 * nz(filt[2])
+
+//filt := na(filt[1]) ? 0 : c1 * (w + nz(w[1])) / 2.0  + c2 * nz(filt[1]) + c3 * nz(filt[2])
+
+
+
+// Smoothness (Reduce noise)
+var emaLength = 1 //input(1, "EMA Length", group = "VZO")
+
+
+uniL = filt > 0  
+vzoL = indic_ > indic_[1]
+
+// Dynamically adjust EMA length based on conditions
+emaLength := emaLength -1
+if (uniL and vzoL) or (not uniL and not vzoL)
+emaLength := emaLength + 2
+
+
+// Reset EMA length to default if it exceeds the limits
+if emaLength > maxEmaLength or emaLength < minEmaLength
+emaLength := maxEmaLength - 1
+
+
+indic := ta.ema2(indic_, emaLength)
+
+
+indic
+
+// @function smooth: Smoothing function with DFT1
+// @param dft1: DFT1 value
+// @param indic__: Optional input for indicator (default is close)
+// @param _devided: Divisor for smoothing calculations
+// @param minEmaLength: Minimum EMA length
+// @param maxEmaLength: Maximum EMA length
+// @param src: Source series
+// @returns Smoothed series
+export smooth(  series float dft1 , series float indic__  = na , int _devided = 10, int minEmaLength = 1, int maxEmaLength = 8 , series float src = close) =>
+w = (dft1*src - dft1[2]*src[2])   / math.sqrt(math.pow(math.abs(src- src[2]),2) + math.pow(math.abs(dft1[0]- dft1[2]),2))
+//w = (close - close[2])  / 2
+
+indic = src
+
+var filt = float(na)
+aprox = FFT()
+indic_ = na(indic__) ? aprox : indic__
+a = math.sqrt(2) * math.pi / _devided
+b = math.cos(math.sqrt(2) * 180 / _devided)
+c2 = 2 *  math.pow(a, 2) * b
+c3 = math.pow(a, 4)
+c1 = 1 - 2 *  math.pow(a, 2) * math.cos(b) + math.pow(a, 4)
+
+
+filt := na(filt[1]) ? 0 : c1 * (w*dft1 + nz(w[1]*dft1[1])) / 2.0 /math.abs(dft1[1]-dft1[0]) + c2 * nz(filt[1]) - c3 * nz(filt[2])
+
+
+//filt := na(filt[1]) ? 0 : c1 * (w*dft1 + nz(w[1]*dft1[1])) /math.sqrt(
+//     math.pow(math.abs(w- w[1]),2) + math.pow(math.abs(dft1[0]- dft1[1]),2)
+//     ) + c2 * nz(filt[1]) + c3 * nz(filt[2])
+
+//filt := na(filt[1]) ? 0 : c1 * (w + nz(w[1])) / 2.0  + c2 * nz(filt[1]) + c3 * nz(filt[2])
+
+
+
+// Smoothness (Reduce noise)
+var emaLength = 1 //input(1, "EMA Length", group = "VZO")
+
+
+uniL = filt > 0  
+vzoL = indic_ > indic_[1]
+
+// Dynamically adjust EMA length based on conditions
+emaLength := emaLength -1
+if (uniL and vzoL) or (not uniL and not vzoL)
+emaLength := emaLength + 2
+
+
+// Reset EMA length to default if it exceeds the limits
+if emaLength > maxEmaLength or emaLength < minEmaLength
+emaLength := maxEmaLength - 1
+
+
+indic := ta.ema2(src, emaLength)
+
+
+indic
+
+// @function vzo_ema: Volume Zone Oscillator with EMA smoothing
+// @param src: Source series
+// @param len: Length parameter for EMA
+// @returns VZO value
+export vzo_ema(series float src, int len) =>
+dvol = math.sign(src - src[2]) * volume //chicken dinner
+dvma = ta.ema(dvol, len) //ema
+vma = ta.ema(volume, len)
+VZO_1 = vma != 0 ? 100 * dvma / vma : 0
+
+
+// @function vzo_sma: Volume Zone Oscillator with SMA smoothing
+// @param src: Source series
+// @param len: Length parameter for SMA
+// @returns VZO value
+export vzo_sma(series float src, int len) =>
+dvol = math.sign(src - src[2]) * volume //chicken dinner
+dvma = ta.sma(dvol, len) //ema
+vma = ta.sma(volume, len)
+VZO_1 = vma != 0 ? 100 * dvma / vma : 0
+
+
+// @function vzo_wma: Volume Zone Oscillator with WMA smoothing
+// @param src: Source series
+// @param len: Length parameter for WMA
+// @returns VZO value
+export vzo_wma(series float src, int len) =>
+dvol = math.sign(src - src[2]) * volume //chicken dinner
+dvma = ta.wma(dvol, len) //ema
+vma = ta.sma(volume, len)
+VZO_1 = vma != 0 ? 100 * dvma / vma : 0
+
+
+
+// @function alma2: Arnaud Legoux Moving Average 2
+// @param series: Input series
+// @param windowsize: Size of the moving average window
+// @param offset: Offset parameter
+// @param sigma: Sigma parameter
+// @returns ALMA value
+alma2(series, windowsize, offset, sigma) =>
+    m = offset * (windowsize - 1)
+    //m = math.floor(offset * (windowsize - 1)) // Used as m when math.floor=true
+    s = windowsize / sigma
+    norm = 0.0
+    sum = 0.0
+    for i = 0 to windowsize - 1
+        weight = math.exp(-1 * math.pow(i - m, 2) / (2 * math.pow(s, 2)))
+        norm := norm + weight
+        sum := sum + series[windowsize - i - 1] * weight
+    sum / norm
+//Wavelet
+
+
+// @function Wavelet: Wavelet Transform
+// @param len: Length parameter for ALMA
+// @param src: Source series
+// @returns Wavelet-transformed series
+export Wavelet(int len = 16, series float src = close )=>
+  r = src * (1 + ta.alma(ta.change(src)/ src, len, 0.77, 6))
+
+
+// @function Wavelet_std: Wavelet Transform with Standard Deviation
+// @param len: Length parameter for ALMA
+// @param offset: Offset parameter for ALMA
+// @param mag: Magnitude parameter for standard deviation
+// @param src: Source series
+// @returns Wavelet-transformed series
+export Wavelet_std(int len = 20, float offset = 0.5, int mag = 2, series float src = close )=>
+std_dev = ta.stdev(src, len ,true)
+sigma_for_alma = std_dev * float(mag)
+alm = alma2(ta.change(src)/ src, len, offset, sigma_for_alma)
+close * (alm + 1)
+
+// @function Fisher_WMA: Fisher Transform with WMA smoothing
+// @param src: Source series
+// @_n1: Parameter for Fisher Transform
+// @_n2: Parameter for Fisher Transform
+// @returns Transformed series
+export Fisher_WMA(series float src = close, int _n1 = 3 , int _n2 = 2)=>
+    _lambda = _n1 / _n2
+    _alpha = _lambda * (_n1 - 1) / (_n1 - _lambda)
+    _ma1 = ta.wma(src, _n1)
+    _ma2 = ta.wma(_ma1, _n2)
+    _src = (1 + _alpha) * _ma1 - _alpha * _ma2
+
+
+// @function Fisher_EMA: Fisher Transform with EMA smoothing
+// @param src: Source series
+// @_n1: Parameter for Fisher Transform
+// @_n2: Parameter for Fisher Transform
+// @returns Transformed series
+export Fisher_EMA(series float src = close, int _n1 = 3 , int _n2 = 2)=>
+    _alpha = _n1 / _n2 * (_n1 - 1) / (_n1 - _n1 / _n2)
+    _ma1 = ta.ema(src, _n1)
+    _ma2 = ta.ema(_ma1, _n2)
+    _src = (1 + _alpha) * _ma1 - _alpha * _ma2
+
+
+// @function InverseFisher_Z_Score_aprox: Inverse Fisher Transform with Z-Score approximation
+// @param len: Length parameter for Z-Score
+// @param src: Source series
+// @returns Transformed series
+export InverseFisher_Z_Score_aprox(int len = 3 , series float src = close ) =>
+z = (src - ta.sma(src,len))/ta.stdev(src,len)
+f = (((math.exp(2*z) - 1)/(math.exp(2*z) + 1) + 1)*50 - 50)/100
+r = src * (1+f)
+
+
+// @function InverseFisher_Z_Score_aprox_Smoothed: Inverse Fisher Transform with Z-Score approximation and smoothing
+// @param len: Length parameter for Z-Score
+// @param src1: Source series for smoothing
+// @returns Transformed and smoothed series
+export InverseFisher_Z_Score_aprox_Smoothed(int len = 3 , series float src1 = close ) =>
+src = smooth(src1)
+z = (src - ta.sma(src,len))/ta.stdev(src,len)
+f = (((math.exp(2*z) - 1)/(math.exp(2*z) + 1) + 1)*50 - 50)/100
+r = src * (1+f)
