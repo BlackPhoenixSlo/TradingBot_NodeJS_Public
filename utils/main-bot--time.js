@@ -8,7 +8,7 @@ time.delay = (ms) => {
 };
 
 time.getTodaysUTCStartTimestamp = () => {
-    // Create a new Date object for the c_replace_ent time
+    // Create a new Date object for the current time
     const now = new Date();
 
     // Convert to a UTC date string, then to a Date object to reset hours, minutes, and seconds to 0

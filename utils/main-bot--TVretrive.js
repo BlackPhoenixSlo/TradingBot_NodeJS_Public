@@ -1,7 +1,5 @@
 require('dotenv').config();
-
-// all private indicators :
-// https://pine-facade.tradingview.com/pine-facade/list?filter=saved//const TradingView = require('./main'); // Adjust the path as needed
+//const TradingView = require('./main'); // Adjust the path as needed
 const TradingView = require('@mathieuc/tradingview');
 
 require('punycode/')
@@ -11,7 +9,7 @@ const {processData_mongoDbUpload} = require('./main-bot--mongoUpload'); // Adjus
 
 
 
-async function fetchDataWithRetry(client_tv,market, timeframe, indicator_id, id, certificate, maxRetries = 3) {
+async function fetchDataWithRetry(client_tv,market, timeframe, indicator_id, id, certificate, maxRetries = 1) {
     let attempts = 0;
 
     while (attempts < maxRetries) {
@@ -93,8 +91,8 @@ async function fetchDataForTimeframes(client_tv,market, timeframes,indicator_id,
 async function fetchAllData(client_tv,market, timeframes,indicator_id,id,certificate) {
     let allProcessedData = {};
 
-    for (let i = 0; i < timeframes.length; i += 3) {
-        let remainingTimeframes = timeframes.slice(i, i + 3);
+    for (let i = 0; i < timeframes.length; i += 10) {
+        let remainingTimeframes = timeframes.slice(i, i + 10);
 
         // Fetch data for up to three timeframes
         const dataResults = await fetchDataForTimeframes(client_tv,market, remainingTimeframes,indicator_id,id,certificate);
@@ -139,7 +137,7 @@ async function calculatePositions(client_tv,client,markets,timeframes,indicator_
 
 
 
-const maxRetries = 3; // Maximum number of retries
+const maxRetries = 1; // Maximum number of retries
 const timeoutInterval = 20000; // Time to wait for the function to complete, in milliseconds (1 minute)
 
 let isCancelled = false; // Flag to indicate whether the operation should be considered cancelled

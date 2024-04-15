@@ -1,24 +1,25 @@
 require('punycode/')
 
 
-const id = "_replace_";  // trading view
-const certificate = "_replace_"; // trading view
+const id = "";  // trading view
+const certificate = ""; // trading view
  
 
-let key = "_replace_";
-let secret = "_replace_"; // lowcaps
+let key = "";
+let secret = ""; // bybit
+const uri = ""; //mongo
 
 const leverage = '2.8';
-    let NofCoins = 7;
-    let lev = 1.2;
+    let NofCoins = 3;
+    let lev = 1;
     const limit_persentage_ofset = 0.1; // 0.1 is suggested // 0.1 is 0.1% // 5 is 5% <--- for testing use 5
 
-    let weights_no_prov = [1.00,14.00,	1.00,	1.00,	1.00,	4.00,	1.00,	1.00,	1.00,	1.00]; // Example weights
-    let weights_prov = [1.00,5.00,5.00,5.00,0,5.00,0,0,1.00,2.00]; // Example weights
+    let weights_no_prov = [1.25 ,13.00,	1.25,	2.19,	1.10,	4.06,	1.10,	1.10,	1.00,	1.06];  // Example weights
+    let weights_prov =[66.78, 33.75, 39.98, 37.35,0, 46.02,0, 0, 29.86, 20.05]; // Example weights
 
 
     
-    let webhookUrl = 'https://discord.com/api/_replace_/_replace_/_replace_-sGr_bcV';
+    let webhookUrl = '';
 
 const indicator_id = "USER;03d7ea932b9044e6aefc5d264f0e214f"
     const timeframes = ['4H','12H','1D', '2D', '3D', '4D', '5D', '6D', 'W', '1M'];
@@ -27,7 +28,7 @@ const indicator_id = "USER;03d7ea932b9044e6aefc5d264f0e214f"
     //     'BYBIT:TIAUSDT.P',   
     //     'BYBIT:ROSEUSDT.P',  'BYBIT:BANDUSDT.P',
     //     'BYBIT:ENJUSDT.P',   'BYBIT:1INCHUSDT.P',
-    //     'BYBIT:MINAUSDT.P',
+    //     'BYBIT:MINAUSDT.P', 
     //     'BYBIT:RNDRUSDT.P',  
     //     'BYBIT:ALGOUSDT.P',  
     //     'BYBIT:BAKEUSDT.P',  'BYBIT:AXSUSDT.P',
@@ -41,39 +42,39 @@ const indicator_id = "USER;03d7ea932b9044e6aefc5d264f0e214f"
     //     'BYBIT:NEARUSDT.P','BYBIT:AAVEUSDT.P'
     //   ];   
       
-    let markets = ['BYBIT:BTCUSDT.P', 'BYBIT:ETHUSDT.P','BYBIT:AAVEUSDT.P',
-    'BYBIT:SOLUSDT.P','BYBIT:XRPUSDT.P','BYBIT:ONDOUSDT.P','BYBIT:AAVEUSDT.P'
+    let markets = [
+    'BYBIT:ENAUSDT.P'
 ];
 
-    const spreadsheetId = "_replace_";
+    const spreadsheetId = ";
 
-// const fetchAllMarketCapAndCorrelationData = require('./utils/main-bot--GetMArketCap_Corr');
-// const RetreveTV_Data_MongoDBpush = require('./utils/main-bot--TVretrive'); // Adjust the path as needed
-// const updateGooglesheets = require('./utils/main-bot--GoogleSheets'); // Adjust the path as needed
-// const {getValidCredentials} = require('./utils/main-bot__testcredentials'); // Adjust the path as needed
-// const makeNonprovisionaDailySignal = require('./utils/main-bot--nonProvisional'); // Adjust the path as needed
-// const  {weightedaverage,MultipleWeightedAverage } = require('./utils/main-bot--CalculateWaightedSignals'); // Adjust the path as needed
-// const {alerts, MakeAlerts ,MakeAlertsFast} = require("./utils/main-bot--alerts");
-// const {fetchActiveOrders, DisplayBinanceData} = require("./utils/main-bot--bybit");
+
 const { RestClientV5 }= require('bybit-api');
 const TradingView = require('@mathieuc/tradingview');
 
-const {
-    fetchAllMarketCapAndCorrelationData,
-  RetreveTV_Data_MongoDBpush,
-  updateGooglesheets,
-  getValidCredentials,
-  makeNonprovisionaDailySignal,
-  weightedaverage,
-  MultipleWeightedAverage,
-  alerts,
-  MakeAlerts,
-  MakeAlertsFast,
-  fetchActiveOrders,
-  DisplayBinanceData
-    // import other utilities as needed
-  } = require('@blackphoenixslo/trading-bot-framework');
-
+// const {
+//     fetchAllMarketCapAndCorrelationData,
+//   RetreveTV_Data_MongoDBpush,
+//   updateGooglesheets,
+//   getValidCredentials,
+//   makeNonprovisionaDailySignal,
+//   weightedaverage,
+//   MultipleWeightedAverage,
+//   alerts,
+//   MakeAlerts,
+//   MakeAlertsFast,
+//   fetchActiveOrders,
+//   DisplayBinanceData
+//     // import other utilities as needed
+//   } = require('@blackphoenixslo/trading-bot-framework');
+const fetchAllMarketCapAndCorrelationData = require('./utils/main-bot--GetMArketCap_Corr');
+const RetreveTV_Data_MongoDBpush = require('./utils/main-bot--TVretrive'); // Adjust the path as needed
+const updateGooglesheets = require('./utils/main-bot--GoogleSheets'); // Adjust the path as needed
+const {getValidCredentials} = require('./utils/main-bot__testcredentials'); // Adjust the path as needed
+const makeNonprovisionaDailySignal = require('./utils/main-bot--nonProvisional'); // Adjust the path as needed
+const  {weightedaverage,MultipleWeightedAverage } = require('./utils/main-bot--CalculateWaightedSignals'); // Adjust the path as needed
+const {alerts, MakeAlerts ,MakeAlertsFast} = require("./utils/main-bot--alerts");
+const {fetchActiveOrders, DisplayBinanceData} = require("./utils/main-bot--bybit");
 
 
 
@@ -82,7 +83,6 @@ const cron = require('node-cron');
 const { MongoClient } = require('mongodb');
 
 // Replace this URI with your MongoDB connection string.
-const uri = "mongodb+srv://_replace_:_replace_@cluster0._replace_.mongodb.net/"; //mongo
 
 
 
@@ -117,7 +117,7 @@ async function main3(id,certificate) {
 
 
 
-    const dbname="yourDatabaseName"
+    const dbname="yourDatabaseName2"
 
     const type_mybe_provisional = "summary_data_for_"
     const type_mybe_provisional2 = "no_provisional_summary_"
@@ -133,7 +133,7 @@ async function main3(id,certificate) {
 
 
 //     const apiKey = '_replace_';
-//         const url_coinbase = 'https://pro-api.coinmarketcap.com/v1/cryptoc_replace_ency/quotes/latest';
+//         const url_coinbase = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest';
 // const cryptoSymbols = ['BTC', 'ETH', 'XRP', 'SOL', 'BNB','INJ']; // Ensure this is an array
 //         const periods = [5,15, 30, 60, 90, 120,200];
 
@@ -345,8 +345,8 @@ async function M() {
 
 //     // const id =  credentials.session
 //     // const certificate = credentials.signature
-//     const id = "_replace_";
-//     const certificate = "_replace_";
+//     const id = "fyb8tc8yps6ju7uarv8vippr62gsi7l5";
+//     const certificate = "v2:WFPAGDvBqzuPp0YrFtMXiovmN5fJAvfgMytaPpLeIKI=";
     
 //     //if (false){
 //     await main3(id,certificate)

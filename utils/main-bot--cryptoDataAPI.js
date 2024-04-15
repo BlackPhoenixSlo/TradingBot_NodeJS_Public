@@ -4,13 +4,13 @@ const time = require("./main-bot--time");
 const CRYPTOWATCH_PUBLIC_KEY = "ludb5n5x2/7FmxvJblSOOreozOFjNi+6MP+ev7Z0";
 const cryptoDataAPI = {};
 
-// Returns the c_replace_ent market cap for the specified coins
+// Returns the current market cap for the specified coins
 cryptoDataAPI.getMarketCap = async (coins) => {
     var marketCap = {};
 
     const result = await axios({
         method: "get",
-        url: "https://pro-api.coinmarketcap.com/v2/cryptoc_replace_ency/quotes/latest",
+        url: "https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest",
         headers: {
             "X-CMC_PRO_API_KEY": process.env.COINMARKETCAP_API_KEY
         },

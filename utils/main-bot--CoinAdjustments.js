@@ -35,7 +35,7 @@ function adjustQuantity(coin, adjustment) {
             decimalPlaces = 3;
             break;
             case "ETHUSDT":
-                decimalPlaces = 3;
+                decimalPlaces = 2;
                 break;
       case "INJUSDT":
           decimalPlaces = 1;

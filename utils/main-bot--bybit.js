@@ -17,7 +17,7 @@ const { adjustQuantity }= require('./main-bot--CoinAdjustments');
 
 
 
-async function fetchC_replace_entPrices(client,markets) {
+async function fetchCurrentPrices(client,markets) {
     let prices = {};
     console.log(markets);
 
@@ -40,11 +40,11 @@ async function fetchC_replace_entPrices(client,markets) {
             if (response && response.result && response.result.list && response.result.list.length > 0) {
                 let lastPrice = response.result.list[0].lastPrice;
                 prices[coin] = parseFloat(lastPrice);
-                console.log(`C_replace_ent ${coin} Price:`, lastPrice);
+                console.log(`Current ${coin} Price:`, lastPrice);
             }
         }
     } catch (error) {
-        console.error('Error fetching c_replace_ent prices:', error);
+        console.error('Error fetching current prices:', error);
         return {};
     }
     //console.log(prices)
@@ -58,7 +58,7 @@ async function fetchC_replace_entPrices(client,markets) {
 
 
 
-async function fetchActiveOrders(client,markets, allocation,webhookUrl,leverage = '2.8',NofCoins=20,lev=1.2, limit_persentage_ofset=0.1) {
+async function fetchActiveOrders(client,markets, allocation,webhookUrl,leverage = '2.8',NofCoins=20,lev=1.2, limit_peersantage_offset=0.1) {
     let changes = {}
     try {
         console.log('start fetchmarket orders:', allocation);
@@ -71,7 +71,7 @@ async function fetchActiveOrders(client,markets, allocation,webhookUrl,leverage 
 
         let displayTPIValues = [{ displayName: 'Bybit total Equity', score: totalEquity / lev }];
 
-        const coinPrices = await fetchC_replace_entPrices(client,markets);
+        const coinPrices = await fetchCurrentPrices(client,markets);
         console.log("Coin prices fetched:", coinPrices);
 
         for (let market of markets) {
@@ -122,10 +122,10 @@ async function fetchActiveOrders(client,markets, allocation,webhookUrl,leverage 
                 console.log(`${coin} To Adjust:`, coinToAdjust);
 
                 console.log(`${coin} Adjustment in USD:`, Math.abs(targetCoinUsdValue - coinUsdValue));
-                console.log(`Minimum To Adjust in USD:`, totalEquity / NofCoins / 2);
+                console.log(`Minimum To Adjust in USD:`, totalEquity / NofCoins / 3.1415926);
 
 
-          if (Math.abs(targetCoinUsdValue - coinUsdValue) >  totalEquity /NofCoins/2) {
+          if (Math.abs(targetCoinUsdValue - coinUsdValue) >  totalEquity /NofCoins/3.1415926) {
             let orderType, qty, price;
             changes[coin]=targetCoinAllocation;
 
@@ -159,7 +159,7 @@ async function fetchActiveOrders(client,markets, allocation,webhookUrl,leverage 
               // Regular limit order
               orderType = 'Limit';
               qty = adjustQuantity(coin_bybit,coinToAdjust)
-            const prise_int = coinToAdjust > 0 ? coinPrice*(1-limit_persentage_ofset/100) : coinPrice * (1+limit_persentage_ofset/100);
+            const prise_int = coinToAdjust > 0 ? coinPrice*(1-limit_peersantage_offset/100) : coinPrice * (1+limit_peersantage_offset/100) ;
               price = prise_int .toString()
             }
 

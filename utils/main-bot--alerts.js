@@ -1,8 +1,6 @@
 const axios = require("axios");
 require('dotenv').config();
-
-// all private indicators :
-// https://pine-facade.tradingview.com/pine-facade/list?filter=savedconst  {weightedaverage,MultipleWeightedAverage } = require('./main-bot--CalculateWaightedSignals'); // Adjust the path as needed
+const  {weightedaverage,MultipleWeightedAverage } = require('./main-bot--CalculateWaightedSignals'); // Adjust the path as needed
 
 
 const alerts = {};

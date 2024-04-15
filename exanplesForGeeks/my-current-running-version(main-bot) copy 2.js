@@ -179,7 +179,7 @@ DisplayBinanceData(client_bybit,webhookUrl,lev);
       });
 client_tv.end();
 client_tv = new TradingView.Client({ token: id, signature: certificate });
-    webhookUrl = 'https://discord.com/api/_replace_/1193637484354084925/zPQhzT0-g1Xz269cvtrsLu68k7L116mFAlkBesNXp7bPPAO19Z9V7ECyXD4yrH_4beIE'
+    webhookUrl = 'https://discord.com/api/_replace_/1193637484354084925/zPQhzT0-_replace_'
    //DisplayBinanceData(client_bybit,webhookUrl,lev);
  await TraderBotS(client,client_tv, client_bybit, weights_no_prov,weights_prov, indicator_id, id, certificate, dbname, markets, timeframes, webhookUrl,lev,NofCoins,leverage) 
     MakeAlerts(markets, weights_prov, client, type_mybe_provisional, timeframes,webhookUrl,"ProvisionalGiants",2);
@@ -205,7 +205,7 @@ DisplayBinanceData(client_bybit,webhookUrl,lev);
         secret: secret,
       });
     client_tv = new TradingView.Client({ token: id, signature: certificate });
-    webhookUrl = 'https://discord.com/api/_replace_/1200603024654086144/46rrRC7_87othon6hQW8H5O16AV2Letk1Mm_qpqL5GzsSoIFmZ2OeHY_OO6R9ovM1qk-'
+    webhookUrl = 'https://discord.com/api/_replace_/_replace_/_replace_-'
    //DisplayBinanceData(client_bybit,webhookUrl,lev);
  await TraderBotS(client,client_tv, client_bybit, weights_no_prov,weights_prov, indicator_id, id, certificate, dbname, markets, timeframes, webhookUrl,lev,NofCoins,leverage) 
     await MakeAlerts(markets, weights_prov, client, type_mybe_provisional, timeframes,webhookUrl,"ProvisionalTopAlts",0);
