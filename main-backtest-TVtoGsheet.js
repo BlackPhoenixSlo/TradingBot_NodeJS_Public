@@ -158,11 +158,14 @@ async function start() {
       // dataArrays2.push(data2);
       
     }
+    console.log('item', processedDataMoveDown);
+
 
     const MoveDown = 1;
 
     const processedData = processDataForTimeframes(timeframes,0, ...dataArrays);
     const processedDataMoveDown = processDataForTimeframes(timeframes,MoveDown, ...dataArrays);
+    console.log('item', processedData);
 
     await appendAllDataFromJson(auth, spreadsheetId, sheetTitle, processedData);
 
