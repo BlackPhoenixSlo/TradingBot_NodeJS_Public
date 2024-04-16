@@ -7,8 +7,8 @@ require('punycode/')
 
 let key = "";// bybit
 let secret = ""; // bybit
-const id = "";  // trading view
-const certificate = ""; // trading view
+const id = "";  // trading view  // sessionid
+const certificate = ""; // trading view // sessionid_sign
 spreadsheetId = ''; // google sheets
 const leverage = '2.8';
     let NofCoins = 3;

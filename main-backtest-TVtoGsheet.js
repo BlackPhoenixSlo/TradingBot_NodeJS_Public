@@ -5,8 +5,8 @@ require('dotenv').config();
 // fill this below
 
 const indi_ = 'USER;91bdff47320b4284a375f428f683b21e';
-                                                    const  id = "_replace_";
-                               const certificate = "_replace_";
+const  sessionid = "_replace_";
+const sessionid_sign = "_replace_";
   const timeframes = ['4H','12H','1D', '2D', '3D', '4D', '5D', '6D', 'W', '1M'];
   const markets = ['BTC'];
   const spreadsheetId = "_replace_";
@@ -128,13 +128,13 @@ function processDataForTimeframes(timeframes, MoveDown = 0, ...dataArrays) {
 // 
 async function start() {
   // const indi_ = 'USER;03d7ea932b9044e6aefc5d264f0e214f'
-  // const id = "_replace_g";
-  // const certificate = "v2:_replace_/_replace_g=";
+  // const sessionid = "_replace_g";
+  // const sessionid_sign = "v2:_replace_/_replace_g=";
   // const timeframes = ['1D', '2D', '3D', '4D'];
   // const markets = ['BTC','ETH','BNB'];
   // const spreadsheetId = "_replace_g";
 
-  const client = new TradingView.Client({ token: id, signature: certificate });
+  const client = new TradingView.Client({ token: sessionid, signature: sessionid_sign });
 
 
   for (const coin of markets) {
