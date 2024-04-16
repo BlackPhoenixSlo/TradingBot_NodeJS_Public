@@ -12,39 +12,39 @@ Insert all of the API keys.
 
 node main-... press tab , to run a bot
 
-You need to get
+You need to get:
 
 Trading view coockies. 
 
 const id = "";  // trading view
 const certificate = ""; // trading view
 
-Bybiy api keys 
+Bybit api keys.
 
 let key = "";
 let secret = ""; // bybit
 
-Mongo login uri
+Mongo login uri.
 
 const uri = ""; //mongo
 
-Discord webhook uri
+Discord webhook uri.
 
 let webhookUrl = '';
 
-You need to set and download google cloud json file
-test-sheets-407121-
+You need to set and download google cloud json file :
+test-sheets-407121-.json
 
-and set path to it in .env
+and set path to it in .env :
 
 GOOGLE_APPLICATION_CREDENTIALS=./utils/test-sheets-407121-json
 #GOOGLE_APPLICATION_CREDENTIALS=./test-sheets-407121-json
 GCLOUD_PROJECT=hours-bding
 
-If you are going to use, cryptomarketcap uti, check main-calculatetecorrelation.py in _helpFunctions
+If you are going to use, cryptomarketcap api, check [_main-calculatecorrelation](_helpFunctions/_main-calculatecorrelation.js) and set you api keys.
 const apiKey = '_replace_';
 
-This is all now you set your indicator and timeframes and waighting for them. This are defaults, those I use. 
+This is all now you can change your indicator and timeframes and weightings for them. This are defaults, I use these: 
 
 const indicator_id = "USER;03d7ea932b9044e6aefc5d264f0e214f"
 
