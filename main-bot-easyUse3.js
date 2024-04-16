@@ -260,7 +260,7 @@ async function TraderBotS(client,client_tv, client_bybit,  weights_no_prov,weigh
             const allocations = { [allocationKey]: signal / NofCoins };
 
  console.log(`allocations  ${signal}`);
-            await fetchActiveOrders(client_bybit, [market], allocations, webhookUrl, leverage, NofCoins, lev,5);
+            await fetchActiveOrders(client_bybit, [market], allocations, webhookUrl, leverage, NofCoins, lev, limit_persentage_ofset);
 		await sleep(2500 );
             // Uncomment these if alerts are needed
             // MakeAlerts([market], weights, client, type_mybe_provisional, timeframes, webhookUrl);
