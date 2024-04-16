@@ -128,6 +128,6 @@ you can use
 //   } = require('@blackphoenixslo/trading-bot-framework');
 
 
-If you have any questions reach out to me on Telegram @britneyBitch42069 or find me on Discord
+If you have any questions reach out to me on Telegram @jakabasej or find me on Discord
 
 https://discord.gg/2wUZkjBP
