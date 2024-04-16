@@ -1,14 +1,15 @@
 require('punycode/')
 
 
-const id = "";  // trading view
-const certificate = ""; // trading view
+
+
  
 
-let key = "";
+let key = "";// bybit
 let secret = ""; // bybit
-const uri = ""; //mongo
-
+const id = "";  // trading view
+const certificate = ""; // trading view
+spreadsheetId = ''; // google sheets
 const leverage = '2.8';
     let NofCoins = 3;
     let lev = 1;
@@ -17,10 +18,11 @@ const leverage = '2.8';
     let weights_no_prov = [1.25 ,13.00,	1.25,	2.19,	1.10,	4.06,	1.10,	1.10,	1.00,	1.06];  // Example weights
     let weights_prov =[66.78, 33.75, 39.98, 37.35,0, 46.02,0, 0, 29.86, 20.05]; // Example weights
 
+    const uri = ""; //mongo
+    
+    let webhookUrl = ''; // discord
 
     
-    let webhookUrl = '';
-
 const indicator_id = "USER;03d7ea932b9044e6aefc5d264f0e214f"
     const timeframes = ['4H','12H','1D', '2D', '3D', '4D', '5D', '6D', 'W', '1M'];
 
@@ -43,10 +45,9 @@ const indicator_id = "USER;03d7ea932b9044e6aefc5d264f0e214f"
     //   ];   
       
     let markets = [
-    'BYBIT:ENAUSDT.P'
+    'BYBIT:MATICUSDT.P'
 ];
 
-    const spreadsheetId = ";
 
 
 const { RestClientV5 }= require('bybit-api');
@@ -212,49 +213,6 @@ async function abs(a){
 }
 
 
-async function TraderBot(client, client_bybit,  weights_no_prov,weights_prov, indicator_id, id, certificate, dbname, markets, timeframes, webhookUrl, lev, NofCoins, leverage) {
-    const type_mybe_provisional = "summary_data_for_";
-    const type_mybe_provisional2 = "no_provisional_summary_";
-
-    for (const market of markets) {
-        try {
-            await RetreveTV_Data_MongoDBpush(client, [market], timeframes, indicator_id, id, certificate, dbname);
-            await makeNonprovisionaDailySignal(client, [market], timeframes, dbname);
-
-            const weight = await weightedaverage(market, weights_prov, client, type_mybe_provisional, timeframes, 0);
-            const weight2 = await weightedaverage(market, weights_no_prov, client, type_mybe_provisional2, timeframes, 0);
-
-            console.log("weight",weight);
-            console.log("NofCoins",NofCoins);
-            let coin_bybit = market.split(':')[1].replace('.P', '');
-            let allocationKey = coin_bybit.replace('.P', ''); // Remo
-
-
-            let signal = 0;
-            if (weight !== 0) {
-                signal = weight / Math.abs(weight) 
-            }
-            if (weight2 !== 0) {
-                signal += weight2 / Math.abs(weight2) ;
-            }
-
-            signal /= 2;
-
-            const allocations = { [allocationKey]: signal / NofCoins };
-
-            console.log("allocations",allocations);
-
-            
-            await fetchActiveOrders(client_bybit, [market], allocations, webhookUrl, leverage, NofCoins, lev, limit_persentage_ofset);
-            console.log(`Active orders processed for market: ${market}`);
-
-            // MakeAlerts([market], weights, client, type_mybe_provisional, timeframes, webhookUrl);
-            // MakeAlerts([market], weights, client, type_mybe_provisional2, timeframes, webhookUrl);
-        } catch (error) {
-            console.error(`Error processing active orders for market: ${market}:`, error);
-        }
-    }
-}
 
 
 function delay(ms) {
@@ -276,13 +234,23 @@ async function TraderBotS(client,client_tv, client_bybit,  weights_no_prov,weigh
 
             const weight = await weightedaverage(market, weights_prov, client, type_mybe_provisional, timeframes, 0);
             const weight2 = await weightedaverage(market, weights_no_prov, client, type_mybe_provisional2, timeframes, 0);
+            console.log(`weight  ${weight}`);
+            console.log(`weight2  ${weight2}`);
 
-            let signal = 0;
-            if (weight !== 0) {
+            await sleep(1500 );
+            let signal = weight;
+            
+            if (weight != 0) {
                 signal = weight / Math.abs(weight) 
+                console.log(`signal1  ${signal}`);
+
             }
-            if (weight2 !== 0) {
+
+            if (weight2 != 0) {
                 signal += weight2 / Math.abs(weight2) ;
+                console.log(`signal2  ${weight2 / Math.abs(weight2)}`);
+
+
             }
 
             signal /= 2;
@@ -291,6 +259,7 @@ async function TraderBotS(client,client_tv, client_bybit,  weights_no_prov,weigh
             let allocationKey = coin_bybit.replace('.P', '');
             const allocations = { [allocationKey]: signal / NofCoins };
 
+ console.log(`allocations  ${signal}`);
             await fetchActiveOrders(client_bybit, [market], allocations, webhookUrl, leverage, NofCoins, lev,5);
 		await sleep(2500 );
             // Uncomment these if alerts are needed
