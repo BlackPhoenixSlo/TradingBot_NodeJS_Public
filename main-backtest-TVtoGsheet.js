@@ -158,7 +158,7 @@ async function start() {
       // dataArrays2.push(data2);
       
     }
-    console.log('item', processedDataMoveDown);
+    console.log('item', dataArrays);
 
 
     const MoveDown = 1;
