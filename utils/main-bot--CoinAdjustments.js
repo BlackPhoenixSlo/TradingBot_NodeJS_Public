@@ -83,7 +83,7 @@ function adjustQuantity(coin, adjustment) {
           decimalPlaces = 0;
           break;
       default:
-          decimalPlaces = 0; // Default case
+          decimalPlaces = 1; // Default case
   }
 
   const trimmed = Math.abs(adjustment).toFixed(decimalPlaces);

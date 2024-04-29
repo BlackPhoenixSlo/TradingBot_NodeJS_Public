@@ -14,12 +14,16 @@ const {fetchNewestDataFromMongoDB , fetchSecondNewestDataFromMongoDB} = require(
 function calculateWeightedAverage(data, timeframes, weights) {
     let weightedSum = 0;
     let totalWeight = 0;
-    
+    console.log('data', data);
     console.log('Applying weights:', weights);
+	console.log('timeframes, ', timeframes);
+console.log('Applying weights:', weights);
 
     timeframes.forEach((timeframe, index) => {
         const positionKey = `position_${timeframe}`;
+console.log('positionKey', positionKey);
         const weight = parseFloat(weights[index]);
+console.log('weight ', weight );
 
         if (typeof data[positionKey] === 'number' && !isNaN(weight)) {
            // console.log(`Timeframe: ${timeframe}, Position: ${data[positionKey]}, Weight: ${weight}`);
@@ -34,18 +38,19 @@ function calculateWeightedAverage(data, timeframes, weights) {
 
 
 
-async function weightedaverage(market, weights, client, type_mybe_provisional, timeframes, daysBack = 0) {
+async function weightedaverage(market, weights, client, type_mybe_provisional, timeframes,dbName, daysBack = 0) {
     try {
         console.log('Connected successfully to MongoDB');
 
         let marketData;
         if (daysBack === 0) {
-            [marketData] = await fetchNewestDataFromMongoDB(market, client, type_mybe_provisional);
-            // console.log(marketData);
+            [marketData] = await fetchNewestDataFromMongoDB(market, client, type_mybe_provisional,dbName);
+             console.log(marketData);
 
         } else {
-            marketData = await fetchSecondNewestDataFromMongoDB(market, client, type_mybe_provisional, daysBack);
-        }
+            marketData = await fetchSecondNewestDataFromMongoDB(market, client, type_mybe_provisional,dbName);
+        console.log(marketData);
+}
 
         if (!marketData) {
             console.error('No market data found');
@@ -63,13 +68,13 @@ async function weightedaverage(market, weights, client, type_mybe_provisional, t
 }
 
 
-async function MultipleWeightedAverage(market, weightsSets, client, type_mybe_provisional, timeframes,daytime) {
+async function MultipleWeightedAverage(market, weightsSets, client, type_mybe_provisional, timeframes,daytime,dbName) {
     try {
         console.log('Connected successfully to MongoDB');
         let weightedAverages = [];
 
         for (let weights of weightsSets) {
-            const weightedAvg = await weightedaverage3(client, market, weights, type_mybe_provisional, timeframes,daytime);
+            const weightedAvg = await weightedaverage3(client, market, weights, type_mybe_provisional, timeframes,daytime,dbName);
             // console.log(`Weighted Average for set: ${weights} = ${weightedAvg}`);
             if (weightedAvg !== null) {
                 weightedAverages.push(weightedAvg);
@@ -89,17 +94,17 @@ async function MultipleWeightedAverage(market, weightsSets, client, type_mybe_pr
     }
 }
 
-async function weightedaverage3(client, market, weights, type_mybe_provisional, timeframes, daysBack = 1) {
+async function weightedaverage3(client, market, weights, type_mybe_provisional, timeframes, daysBack = 1,dbName) {
     let marketData;
     if (daysBack === 0) {
-        marketData = await fetchNewestDataFromMongoDB(market, client, type_mybe_provisional);
+        marketData = await fetchNewestDataFromMongoDB(market, client, type_mybe_provisional,dbName);
         // console.log(marketData);
         marketData = marketData[0]
         // console.log(marketData);
 
 
     } else {
-        marketData = await fetchSecondNewestDataFromMongoDB(market, client, type_mybe_provisional);
+        marketData = await fetchSecondNewestDataFromMongoDB(market, client, type_mybe_provisional,dbName);
        /// console.log(marketData);
     }
 

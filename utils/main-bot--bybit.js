@@ -58,7 +58,7 @@ async function fetchCurrentPrices(client,markets) {
 
 
 
-async function fetchActiveOrders(client,markets, allocation,webhookUrl,leverage = '2.8',NofCoins=20,lev=1.2, limit_peersantage_offset=0.1) {
+async function fetchActiveOrders(client,markets, allocation,webhookUrl,leverage = '2.8',NofCoins=20,lev=1.2) {
     let changes = {}
     try {
         console.log('start fetchmarket orders:', allocation);
@@ -159,7 +159,7 @@ async function fetchActiveOrders(client,markets, allocation,webhookUrl,leverage 
               // Regular limit order
               orderType = 'Limit';
               qty = adjustQuantity(coin_bybit,coinToAdjust)
-            const prise_int = coinToAdjust > 0 ? coinPrice*(1-limit_peersantage_offset/100) : coinPrice * (1+limit_peersantage_offset/100) ;
+            const prise_int = coinToAdjust > 0 ? coinPrice*0.9999 : coinPrice * 1.0001;
               price = prise_int .toString()
             }
 

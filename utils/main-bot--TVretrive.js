@@ -120,9 +120,10 @@ async function calculatePositions(client_tv,client,markets,timeframes,indicator_
                 // Process data as needed
             
             // Process and upload data to MongoDB
-            const output = processData_mongoDbUpload(client,market, allTimeframesData, timeframes,dbname);
-            //console.log("processData_mongoDbUpload", output)
+            const output = await processData_mongoDbUpload(client,market, allTimeframesData, timeframes,dbname);
+            console.log("processData_mongoDbUpload", output)
             out = output;
+		return output;
         }
     
     } catch (error) {
@@ -146,35 +147,16 @@ async function RetreveTV_Data_MongoDBpush(client_tv,client,markets,timeframes,in
     try {
         console.log('HTTP request received at /runTask');
 
-        for (let attempt = 1; attempt <= maxRetries; attempt++) {
-            console.log(`Attempt ${attempt}: Running calculatePositions`);
-            isCancelled = false; // Reset the flag for each attempt
+    
 
-            const dataPromise = calculatePositions(client_tv,client,markets,timeframes,indicator_id,id,certificate,dbname).then(data => {
-                if (isCancelled) return null; // Ignore the result if the operation is cancelled
-                return data;
-            });
+            const dataPromise = await calculatePositions(client_tv,client,markets,timeframes,indicator_id,id,certificate,dbname);
+	
+              console.log("data",dataPromise);
+		       return dataPromise ;
+            
 
-            const isTimeout = await Promise.race([
-                new Promise(resolve => setTimeout(() => {
-                    isCancelled = true; // Set the flag to cancel the operation
-                    resolve(true);
-                }, timeoutInterval)),
-                dataPromise.then(() => false)
-            ]);
 
-            if (!isTimeout) {
-                const data = await dataPromise;
-                if (data && Object.keys(data).length !== 0) {
-                    console.log("HTTP Task Completed. Data:", data);
-                    return; // Data retrieved successfully, exit function
-                }
-            } else {
-                console.log(`Attempt ${attempt} timed out. Retrying...`);
-            }
-        }
-
-        throw new Error('Failed to retrieve data after maximum attempts');
+      
     } catch (error) {
         console.error('Error in HTTP task:', error);
         // Handle the error as needed

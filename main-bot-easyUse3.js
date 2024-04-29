@@ -5,22 +5,25 @@ require('punycode/')
 
  
 
-let key = "";// bybit
-let secret = ""; // bybit
+
 const id = "";  // trading view  // sessionid
 const certificate = ""; // trading view // sessionid_sign
+const dbname="suckit"
+const uri = ""; //mongodb
+key = ""; // bybit
+secret = ""; //  bybit
 spreadsheetId = ''; // google sheets
-const leverage = '2.8';
-    let NofCoins = 3;
-    let lev = 1;
-    const limit_persentage_ofset = 0.1; // 0.1 is suggested // 0.1 is 0.1% // 5 is 5% <--- for testing use 5
+let webhookUrl = ''; //discord
 
+const leverage = '2.8';
+    let NofCoins = 20;
+    let lev = 1;
+    const limit_persentage_ofset = 5; // 0.1 is suggested // 0.1 is 0.1% // 5 is 5% <--- for testing use 5
+    const speed= 10000 // 10000 == 10 sec this always work, I use 1000 == 1 sec
     let weights_no_prov = [1.25 ,13.00,	1.25,	2.19,	1.10,	4.06,	1.10,	1.10,	1.00,	1.06];  // Example weights
     let weights_prov =[66.78, 33.75, 39.98, 37.35,0, 46.02,0, 0, 29.86, 20.05]; // Example weights
 
-    const uri = ""; //mongo
     
-    let webhookUrl = ''; // discord
 
     
 const indicator_id = "USER;03d7ea932b9044e6aefc5d264f0e214f"
@@ -45,7 +48,7 @@ const indicator_id = "USER;03d7ea932b9044e6aefc5d264f0e214f"
     //   ];   
       
     let markets = [
-    'BYBIT:MATICUSDT.P'
+    'BYBIT:MATICUSDT.P', 'BYBIT:NEARUSDT.P','BYBIT:AAVEUSDT.P'
 ];
 
 
@@ -83,7 +86,6 @@ const {fetchActiveOrders, DisplayBinanceData} = require("./utils/main-bot--bybit
 const cron = require('node-cron');
 const { MongoClient } = require('mongodb');
 
-// Replace this URI with your MongoDB connection string.
 
 
 
@@ -118,7 +120,7 @@ async function main3(id,certificate) {
 
 
 
-    const dbname="yourDatabaseName2"
+
 
     const type_mybe_provisional = "summary_data_for_"
     const type_mybe_provisional2 = "no_provisional_summary_"
@@ -146,21 +148,6 @@ async function main3(id,certificate) {
 
     console.log("done");
 
-    // // Define multiple sets of weights
-    // const weightsSets = [
-    //     [1, 1,1,1,1,1,1,1,1,1],
-    //     [5, 0,1,1,0,1,5,1,1,1] // Example set 1
-    //     // ... add more sets of weights as needed ...
-    // ];
-
-    
-
-    
-   
-
-    // MakeAlertsFast(markets, weightsSets, client, type_mybe_provisional, timeframes,webhookUrl);
-
-
 
 
 
@@ -178,7 +165,6 @@ async function main3(id,certificate) {
   
 
     
-    //DisplayBinanceData(client_bybit,webhookUrl,lev);
 
     let client_tv = new TradingView.Client({ token: id, signature: certificate });
 
@@ -192,14 +178,14 @@ async function main3(id,certificate) {
         secret: secret,
       });
    //DisplayBinanceData(client_bybit,webhookUrl,lev);
- await TraderBotS(client,client_tv, client_bybit, weights_no_prov,weights_prov, indicator_id, id, certificate, dbname, markets, timeframes, webhookUrl,lev,NofCoins,leverage) 
-    MakeAlerts(markets, weights_prov, client, type_mybe_provisional, timeframes,webhookUrl,"ProvisionalGiants",2);
+ await TraderBotS(client,client_tv, client_bybit, weights_no_prov,weights_prov, indicator_id, id, certificate, dbname, markets, timeframes, webhookUrl,lev,NofCoins,leverage,dbname) 
+    MakeAlerts(markets, weights_prov, client, type_mybe_provisional, timeframes,webhookUrl,"ProvisionalGiants",dbname,2);
 await sleep(1500 );
-    MakeAlerts(markets, weights_no_prov, client, type_mybe_provisional2, timeframes,webhookUrl,"NoProvisionalGiants",2);    
+    MakeAlerts(markets, weights_no_prov, client, type_mybe_provisional2, timeframes,webhookUrl,"NoProvisionalGiants",dbname,2);    
 await sleep(1500 );
-    updateGooglesheets( client,markets, timeframes, type_mybe_provisional,"ProvisionalGiants",spreadsheetId);
+    updateGooglesheets( client,markets, timeframes, type_mybe_provisional,"ProvisionalGiants",spreadsheetId,dbname);
 await sleep(1500 );
-    updateGooglesheets( client,markets, timeframes, type_mybe_provisional2,"NoProvisionalGiants",spreadsheetId);
+    updateGooglesheets( client,markets, timeframes, type_mybe_provisional2,"NoProvisionalGiants",spreadsheetId,dbname);
 DisplayBinanceData(client_bybit,webhookUrl,lev);
    
 
@@ -219,7 +205,7 @@ function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function TraderBotS(client,client_tv, client_bybit,  weights_no_prov,weights_prov, indicator_id, id, certificate, dbname, markets, timeframes, webhookUrl, lev, NofCoins, leverage) {
+async function TraderBotS(client,client_tv, client_bybit,  weights_no_prov,weights_prov, indicator_id, id, certificate, dbname, markets, timeframes, webhookUrl, lev, NofCoins, leverage,dbname) {
     const type_mybe_provisional = "summary_data_for_";
     const type_mybe_provisional2 = "no_provisional_summary_";
 
@@ -230,14 +216,14 @@ async function TraderBotS(client,client_tv, client_bybit,  weights_no_prov,weigh
             await RetreveTV_Data_MongoDBpush(client_tv,client, [market], timeframes, indicator_id, id, certificate, dbname);
             await makeNonprovisionaDailySignal(client, [market], timeframes, dbname);
             
-            await sleep(2500 );
+            await sleep(500 );
 
-            const weight = await weightedaverage(market, weights_prov, client, type_mybe_provisional, timeframes, 0);
-            const weight2 = await weightedaverage(market, weights_no_prov, client, type_mybe_provisional2, timeframes, 0);
+            const weight = await weightedaverage(market, weights_prov, client, type_mybe_provisional, timeframes,dbname, 0);
+            const weight2 = await weightedaverage(market, weights_no_prov, client, type_mybe_provisional2, timeframes,dbname, 0);
             console.log(`weight  ${weight}`);
             console.log(`weight2  ${weight2}`);
 
-            await sleep(1500 );
+            await sleep(500 );
             let signal = weight;
             
             if (weight != 0) {
@@ -261,7 +247,7 @@ async function TraderBotS(client,client_tv, client_bybit,  weights_no_prov,weigh
 
  console.log(`allocations  ${signal}`);
             await fetchActiveOrders(client_bybit, [market], allocations, webhookUrl, leverage, NofCoins, lev, limit_persentage_ofset);
-		await sleep(2500 );
+		await sleep(500 );
             // Uncomment these if alerts are needed
             // MakeAlerts([market], weights, client, type_mybe_provisional, timeframes, webhookUrl);
             // MakeAlerts([market], weights, client, type_mybe_provisional2, timeframes, webhookUrl);
@@ -275,7 +261,7 @@ async function TraderBotS(client,client_tv, client_bybit,  weights_no_prov,weigh
     for (const market of markets) {
         processMarket(market);
         // Wait for 10 seconds before starting the next market
-        await delay(10000);
+        await delay(speed); // 10000
     }
 
     console.log('All markets initiated.');

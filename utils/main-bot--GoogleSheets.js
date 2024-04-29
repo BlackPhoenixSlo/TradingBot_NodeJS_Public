@@ -33,7 +33,7 @@ async function getGoogleSheetsAuthToken() {
 
 
 
-async function updateGooglesheets( client,markets, timeframes, type_mybe_provisional,sheetTitle,spreadsheetId) {
+async function updateGooglesheets( client,markets, timeframes, type_mybe_provisional,sheetTitle,spreadsheetId,dbname) {
     const auth = await getGoogleSheetsAuthToken(); 
     //const client = new MongoClient(uri);
     let marketDataArrays = [];
@@ -44,7 +44,7 @@ async function updateGooglesheets( client,markets, timeframes, type_mybe_provisi
 
     for (let market of markets) {
         // Fetch data for each market
-        const data = await fetchNewestDataFromMongoDB(market, client,type_mybe_provisional);
+        const data = await fetchNewestDataFromMongoDB(market, client,type_mybe_provisional,dbname);
         marketDataArrays.push(data);
         // console.log(data);
 

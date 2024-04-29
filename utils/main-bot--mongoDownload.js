@@ -1,23 +1,23 @@
 
 
-async function fetchNewestDataFromMongoDB(market, client,type_mybe_provisional) {
+async function fetchNewestDataFromMongoDB(market, client,type_mybe_provisional,dbName) {
     const [exchange, marketName] = market.split(':');
     console.log(exchange);
     console.log(marketName);
 
-    const collection = client.db('yourDatabaseName').collection(`${type_mybe_provisional}${marketName}`);
+    const collection = client.db(dbName).collection(`${type_mybe_provisional}${marketName}`);
     const query = { exchange: exchange }; // Filter by exchange
     const sort = { id: -1 }; // Sort by 'id' in descending order to get the newest data
     const data = await collection.find(query).sort(sort).limit(1).toArray();
     return [data];
 }
 
-async function fetchSecondNewestDataFromMongoDB(market, client, type_mybe_provisional) {
+async function fetchSecondNewestDataFromMongoDB(market, client, type_mybe_provisional,dbName) {
     const [exchange, marketName] = market.split(':');
     console.log(exchange);
     console.log(marketName);
 
-    const collection = client.db('yourDatabaseName').collection(`${type_mybe_provisional}${marketName}`);
+    const collection = client.db(dbName).collection(`${type_mybe_provisional}${marketName}`);
     const query = { exchange: exchange }; // Filter by exchange
     const sort = { id: -1 }; // Sort by 'id' in descending order to get the newest data
     const data = await collection.find(query).sort(sort).limit(2).toArray();
@@ -31,12 +31,12 @@ async function fetchSecondNewestDataFromMongoDB(market, client, type_mybe_provis
     return [data[1]]; // Return the second document
 }
 
-async function fetchDataFromMongoDB(market, client,type_mybe_provisional) {
+async function fetchDataFromMongoDB(market, client,type_mybe_provisional,dbName) {
     const [exchange, marketName] = market.split(':');
     console.log(exchange)
     console.log(marketName)
 
-    const collection = client.db('yourDatabaseName').collection(`${type_mybe_provisional}${marketName}`);
+    const collection = client.db(dbName).collection(`${type_mybe_provisional}${marketName}`);
     const query = { exchange: exchange }; // Filter by exchange
     const sort = { id: 1 }; // Sort by 'id' in descending order to get the newest data
     const data = await collection.find(query).sort(sort).toArray();

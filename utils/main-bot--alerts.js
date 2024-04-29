@@ -52,15 +52,15 @@ alerts.discordTPIAlertDynamic = async (marketsTpis, webhookUrl,title) => {
 
 
 
-async function MakeAlerts(markets, weights, client, type_mybe_provisional, timeframes,webhookUrl,title,all_tpi_values = 0){
+async function MakeAlerts(markets, weights, client, type_mybe_provisional, timeframes,webhookUrl,title,dbname,all_tpi_values = 0){
 
     let marketsTpis = [];
 	let post = false;
 
     for (let i = 0; i < markets.length; i++) {
         const market = markets[i];
-        const tpiValue = await weightedaverage(market, weights, client, type_mybe_provisional, timeframes,0);
-        const tpiValue_previous = await weightedaverage(market, weights, client, type_mybe_provisional, timeframes,1);
+        const tpiValue = await weightedaverage(market, weights, client, type_mybe_provisional, timeframes,dbname,0);
+        const tpiValue_previous = await weightedaverage(market, weights, client, type_mybe_provisional, timeframes,dbname,1);
 
         if (tpiValue_previous * tpiValue <= 0 && all_tpi_values == 0 || tpiValue_previous != tpiValue && all_tpi_values == 1  || all_tpi_values == 2 ){
             post = true;
@@ -83,14 +83,14 @@ async function MakeAlerts(markets, weights, client, type_mybe_provisional, timef
 }
 
 
-async function MakeAlertsFast(markets, weightsSets, client, type_mybe_provisional, timeframes, webhookUrl){
+async function MakeAlertsFast(markets, weightsSets, client, type_mybe_provisional, timeframes, webhookUrl,dbname){
 
    
 
     // This makes alerts fast but just for 1 day not previous
 
     let marketTpiPromises = markets.map(market => {
-        return MultipleWeightedAverage(market, weightsSets, client, type_mybe_provisional, timeframes,0)
+        return MultipleWeightedAverage(market, weightsSets, client, type_mybe_provisional, timeframes,dbname,0)
             .then(tpi => {
                 return {
                     marketName: market.split(':')[1], // Extracting just the market name
